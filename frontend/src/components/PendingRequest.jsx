@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useCallback} from "react";
 import axios from "axios";
 import AcceptRejectRequestButton from "./ReceiveRequest";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,9 @@ const PendingRequests = ({ currentUserId }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   // eslint-disable-next-line
-  const fetchPendingRequests = async () => {
+  const fetchPendingRequests = useCallback(async () => {
     setLoading(true);
     try {
-      // NOTE: keeping your original API host/port (5050) as in the provided code
       const response = await axios.get(
         `http://localhost:5050/api/connection/pending-requests/${currentUserId}`
       );
@@ -23,12 +22,11 @@ const PendingRequests = ({ currentUserId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUserId]);
 
   useEffect(() => {
-    // eslint-disable-next-line
     if (currentUserId) fetchPendingRequests();
-  }, [currentUserId]);
+  }, [currentUserId, fetchPendingRequests]);
 
   return (
     <div className="min-h-screen pending-page p-6">
