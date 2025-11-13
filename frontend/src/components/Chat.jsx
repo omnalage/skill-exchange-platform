@@ -211,7 +211,6 @@ const Chat = ({ currentUserId, connectedUserId }) => {
 
   // grouping messages by date and sender for display
   const groupedMessages = [];
-  let lastDate = null;
   messages.forEach((m) => {
     const dateKey = new Date(m.timestamp).toDateString();
     if (!groupedMessages.length || groupedMessages[groupedMessages.length - 1].dateKey !== dateKey) {

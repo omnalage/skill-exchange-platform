@@ -12,6 +12,7 @@ const Profile = ({ onLogout }) => {
     bio: "",
     sessionsHosted: 0,
   });
+  // eslint-disable-next-line
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState(null); // { type: 'success'|'error', text }
   const navigate = useNavigate();

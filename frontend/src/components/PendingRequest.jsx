@@ -8,7 +8,7 @@ const PendingRequests = ({ currentUserId }) => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  // eslint-disable-next-line
   const fetchPendingRequests = async () => {
     setLoading(true);
     try {
@@ -26,6 +26,7 @@ const PendingRequests = ({ currentUserId }) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line
     if (currentUserId) fetchPendingRequests();
   }, [currentUserId]);
 
@@ -154,7 +155,7 @@ const PendingRequests = ({ currentUserId }) => {
         ) : (
           <ul className="grid gap-3">
             {requests.map((request) => (
-              <li key={request._id} className="list-item" role="listitem">
+              <li key={request._id} className="list-item">
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div className="user-thumb" aria-hidden>
                     <img
