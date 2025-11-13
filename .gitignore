@@ -1,0 +1,12 @@
+.env
+backend\.env
+
+# Ignore config files
+config/.env
+config/db_config.json
+
+# Ignore node_modules
+node_modules/
+
+# Ignore logs
+logs/
