@@ -19,7 +19,7 @@ const EditProfile = () => {
           return;
         }
         const id = localStorage.getItem("id");
-        const response = await axios.get(`http://localhost:5050/api/users/profile/${id}`, {
+        const response = await axios.get(`https://skill-exchange-platform-x98i.onrender.com/api/users/profile/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -68,7 +68,7 @@ const EditProfile = () => {
           .filter(Boolean),
       };
 
-      const response = await axios.put(`http://localhost:5050/api/users/profile/${id}`, payload, {
+      const response = await axios.put(`https://skill-exchange-platform-x98i.onrender.com/api/users/profile/${id}`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

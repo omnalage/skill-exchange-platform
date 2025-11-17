@@ -26,7 +26,7 @@ function SearchSkills() {
     setUsers([]);
     try {
       // your original API used port 5050 for search
-      const response = await axios.get('http://localhost:5050/api/search/skills', {
+      const response = await axios.get('https://skill-exchange-platform-x98i.onrender.com/api/search/skills', {
         params: { skill: skill.trim() },
       });
 
@@ -60,7 +60,7 @@ function SearchSkills() {
 
     setSendingIds((s) => [...s, receiverId]);
     try {
-      const response = await axios.post('http://localhost:5050/api/connection/send-request', {
+      const response = await axios.post('https://skill-exchange-platform-x98i.onrender.com/api/connection/send-request', {
         senderId,
         receiverId,
       });

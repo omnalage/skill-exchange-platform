@@ -12,7 +12,7 @@ const ConnectedUsers = ({ currentUserId }) => {
     const fetchConnectedUsers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5050/api/connection/connected-users/${currentUserId}`
+          `https://skill-exchange-platform-x98i.onrender.com/api/connection/connected-users/${currentUserId}`
         );
         // Assume response.data is an array of user objects
         setConnectedUsers(response.data || []);

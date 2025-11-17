@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
   - If your backend uses cookie-based auth, set REACT_APP_USE_COOKIES=true
 */
 
-const API = process.env.REACT_APP_API_URL || "http://localhost:5050";
+const API = "https://skill-exchange-platform-x98i.onrender.com";
 const USE_COOKIES = (process.env.REACT_APP_USE_COOKIES || "false").toLowerCase() === "true";
 
 // axios instance

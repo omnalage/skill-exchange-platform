@@ -4,7 +4,7 @@ import axios from 'axios';
 import profileIcon from '../assets/usericon.png';
 
 // keep socket instance here (same as before)
-const socket = io('http://localhost:5050', {
+const socket = io('https://skill-exchange-platform-x98i.onrender.com', {
   withCredentials: true,
   transports: ['websocket', 'polling'],
 });
@@ -39,7 +39,7 @@ const Chat = ({ currentUserId, connectedUserId }) => {
       try {
         const token = localStorage.getItem('token');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const res = await axios.get(`http://localhost:5050/api/users/profile/${connectedUserId}`, { headers });
+        const res = await axios.get(`https://skill-exchange-platform-x98i.onrender.com/api/users/profile/${connectedUserId}`, { headers });
         setConnectedUser(res.data || { username: connectedUserId, avatar: null });
       } catch (err) {
         // fallback to id if profile not available
@@ -50,7 +50,7 @@ const Chat = ({ currentUserId, connectedUserId }) => {
     // fetch history
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(`http://localhost:5050/api/chat/${currentUserId}/${connectedUserId}`);
+        const res = await axios.get(`https://skill-exchange-platform-x98i.onrender.com/api/chat/${currentUserId}/${connectedUserId}`);
         // normalize messages (ensure timestamp strings)
         const msgs = (res.data.messages || []).map(m => ({ ...m, timestamp: m.timestamp || new Date().toISOString(), delivered: true }));
         setMessages(msgs);
@@ -157,7 +157,7 @@ const Chat = ({ currentUserId, connectedUserId }) => {
 
     try {
       // persist on server
-      await axios.put('http://localhost:5050/api/chat/update-chat', {
+      await axios.put('https://skill-exchange-platform-x98i.onrender.com/api/chat/update-chat', {
         user1: currentUserId,
         user2: connectedUserId,
         newMessage,

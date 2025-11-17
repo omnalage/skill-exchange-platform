@@ -13,7 +13,7 @@ const PendingRequests = ({ currentUserId }) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:5050/api/connection/pending-requests/${currentUserId}`
+        `https://skill-exchange-platform-x98i.onrender.com/api/connection/pending-requests/${currentUserId}`
       );
       setRequests(response.data || []);
     } catch (error) {
