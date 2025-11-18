@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import profileIcon from '../assets/usericon.png';
 import Navbar from './Navbar';
+import RecommendedMentors from './recommendedMentors';
 
 // Redesigned Home component — single-file, colors embedded via CSS variables.
 // Palette: Mint & Deep Navy (mint accents, deep navy backgrounds, warm cream cards).
@@ -207,6 +208,15 @@ const Home = ({ isLoggedIn, onLogout }) => {
           </div>
         </div>
       </section>
+
+      {/* --- START OF AI RECOMMENDATION SECTION --- */}
+      {/* Only show this to logged-in users */}
+      {isLoggedIn && (
+        <section className="container mx-auto px-6">
+          <RecommendedMentors />
+        </section>
+      )}
+      {/* --- END OF AI RECOMMENDATION SECTION --- */}
 
       {/* FEATURES */}
       <section className="container mx-auto px-6 mt-16">
