@@ -5,10 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import profileIcon from "../assets/usericon.png";
 
 const Profile = ({ onLogout }) => {
+  // 1. Updated State to include 'learning'
   const [user, setUser] = useState({
     username: "Loading...",
     email: "",
     skills: [],
+    learning: [], // New field
     bio: "",
     sessionsHosted: 0,
   });
@@ -28,6 +30,7 @@ const Profile = ({ onLogout }) => {
           return;
         }
         const id = localStorage.getItem("id");
+        // Use correct API URL
         const response = await axios.get(`https://skill-exchange-platform-x98i.onrender.com/api/users/profile/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -36,7 +39,9 @@ const Profile = ({ onLogout }) => {
         setUser({
           username: data.username || "Unknown",
           email: data.email || "",
+          // 2. Process both skills and learning arrays safely
           skills: Array.isArray(data.skills) ? data.skills : (data.skills ? data.skills.split(",").map(s => s.trim()) : []),
+          learning: Array.isArray(data.learning) ? data.learning : (data.learning ? data.learning.split(",").map(s => s.trim()) : []),
           bio: data.bio || "",
           sessionsHosted: data.sessionsHosted || 0,
           avatar: data.avatar || null,
@@ -61,7 +66,7 @@ const Profile = ({ onLogout }) => {
 
   return (
     <div className="min-h-screen profile-page flex items-center justify-center p-6">
-      {/* Inline theme CSS so the palette shows without touching Tailwind config */}
+      {/* Inline theme CSS */}
       <style>{`
         :root {
           --mint-600: #2dd4bf;
@@ -145,6 +150,17 @@ const Profile = ({ onLogout }) => {
           padding:6px 10px;
           background: linear-gradient(90deg,var(--mint-600),var(--mint-500));
           color:#041f2d;
+          border-radius:999px;
+          font-weight:700;
+          font-size:13px;
+        }
+
+        /* Purple chip style for Learning interests */
+        .chip-learning {
+          padding:6px 10px;
+          background: rgba(168, 85, 247, 0.2);
+          color: #e9d5ff;
+          border: 1px solid rgba(168, 85, 247, 0.3);
           border-radius:999px;
           font-weight:700;
           font-size:13px;
@@ -247,13 +263,35 @@ const Profile = ({ onLogout }) => {
           </div>
 
           <div style={{ marginTop: 18 }}>
-            <div className="section-title">Skills</div>
+            <div className="section-title">Skills I Teach</div>
             <div className="skills">
               {user.skills.length === 0 ? (
                 <div style={{ color: "rgba(255,250,240,0.7)" }}>No skills listed yet.</div>
               ) : (
                 user.skills.map((s, i) => (
                   <div key={i} className="chip">{s}</div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* 3. New Learning Interests Section */}
+          <div style={{ marginTop: 24 }}>
+            <div className="section-title" style={{color: '#c084fc'}}>Skills I Want to Learn</div>
+            <div className="skills">
+              {user.learning.length === 0 ? (
+                <div style={{ color: "rgba(255,250,240,0.5)", fontSize: '13px' }}>
+                  No learning interests yet. <br/>
+                  <span 
+                    style={{textDecoration: 'underline', cursor: 'pointer', color: '#c084fc'}} 
+                    onClick={() => navigate('/edit-profile')}
+                  >
+                    Add some
+                  </span> to get AI recommendations.
+                </div>
+              ) : (
+                user.learning.map((s, i) => (
+                  <div key={i} className="chip-learning">{s}</div>
                 ))
               )}
             </div>

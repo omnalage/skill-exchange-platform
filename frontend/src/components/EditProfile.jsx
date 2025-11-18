@@ -3,7 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
-  const [user, setUser] = useState({ username: "", email: "", skills: "" });
+  // 1. Added 'learning' to state
+  const [user, setUser] = useState({ username: "", email: "", skills: "", learning: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null); // { type: 'success'|'error', text }
@@ -27,7 +28,9 @@ const EditProfile = () => {
         setUser({
           username: data.username || "",
           email: data.email || "",
+          // 2. Load existing skills AND learning interests
           skills: Array.isArray(data.skills) ? data.skills.join(", ") : (data.skills || ""),
+          learning: Array.isArray(data.learning) ? data.learning.join(", ") : (data.learning || ""),
         });
       } catch (err) {
         console.error("Error fetching user data:", err);
@@ -59,13 +62,12 @@ const EditProfile = () => {
         return;
       }
 
+      // 3. Add learning to payload (convert string back to array)
       const payload = {
         username: user.username,
         email: user.email,
-        skills: user.skills
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
+        skills: user.skills.split(",").map((s) => s.trim()).filter(Boolean),
+        learning: user.learning.split(",").map((s) => s.trim()).filter(Boolean),
       };
 
       const response = await axios.put(`https://skill-exchange-platform-x98i.onrender.com/api/users/profile/${id}`, payload, {
@@ -74,7 +76,7 @@ const EditProfile = () => {
 
       setMessage({ type: "success", text: response.data.message || "Profile updated." });
       // optional: update local storage or global state if needed
-      setTimeout(() => navigate("/"), 900); // slight delay so user sees success
+      setTimeout(() => navigate("/profile"), 900); // Redirect to profile to see changes
     } catch (err) {
       console.error("Error updating profile:", err);
       const text =
@@ -231,7 +233,7 @@ const EditProfile = () => {
           </div>
 
           <div style={{ marginBottom: 18 }}>
-            <label className="label" htmlFor="skills">Skills (comma-separated)</label>
+            <label className="label" htmlFor="skills">Skills I can Teach</label>
             <input
               id="skills"
               name="skills"
@@ -240,6 +242,23 @@ const EditProfile = () => {
               onChange={handleChange}
               placeholder="e.g. React, Design, Notion"
             />
+          </div>
+
+          {/* 4. New Field: Learning Interests (AI Driver) */}
+          <div style={{ marginBottom: 18 }}>
+            <label className="label" htmlFor="learning" style={{color: '#a855f7'}}>Skills I want to Learn</label>
+            <input
+              id="learning"
+              name="learning"
+              className="input"
+              value={user.learning}
+              onChange={handleChange}
+              placeholder="e.g. Python, Spanish, Cooking"
+              style={{borderColor: 'rgba(168, 85, 247, 0.4)'}}
+            />
+            <p style={{fontSize: '12px', color: 'rgba(168, 85, 247, 0.8)', marginTop: 6}}>
+              * Adding these will unlock AI recommendations on your dashboard.
+            </p>
           </div>
 
           <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 6 }}>
