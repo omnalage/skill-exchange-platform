@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import profileIcon from '../assets/usericon.png'; // Ensure this path is correct
+import profileIcon from '../assets/usericon.png';
 
 const RecommendedMentors = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
+  // New state to track connection status per user ID: 'sending' | 'sent' | undefined
+  const [requestStatus, setRequestStatus] = useState({}); 
   const navigate = useNavigate();
   const currentUserId = localStorage.getItem('id');
 
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
-        // Using the standardized API URL (adjust if using .env)
-        const res = await axios.get(`https://skill-exchange-platform-x98i.onrender.com/api/recommendations/${currentUserId}`);
+        const API_URL = window.location.hostname === 'localhost' 
+          ? `http://localhost:5000/api/recommendations/${currentUserId}` 
+          : `https://skill-exchange-platform-x98i.onrender.com/api/recommendations/${currentUserId}`;
+        
+        const res = await axios.get(API_URL);
         setRecommendations(res.data);
       } catch (err) {
         console.error("Failed to fetch recommendations", err);
@@ -25,8 +30,48 @@ const RecommendedMentors = () => {
     if (currentUserId) fetchRecommendations();
   }, [currentUserId]);
 
+  // --- NEW: Handle Connect Logic ---
+  const handleConnect = async (receiverId) => {
+    if (!currentUserId) return;
+
+    // 1. Set state to sending
+    setRequestStatus(prev => ({ ...prev, [receiverId]: 'sending' }));
+
+    try {
+      const API_BASE = window.location.hostname === 'localhost'
+        ? 'http://localhost:5000'
+        : 'https://skill-exchange-platform-x98i.onrender.com';
+
+      // 2. Call the connection endpoint
+      await axios.post(`${API_BASE}/api/connection/send-request`, {
+        senderId: currentUserId,
+        receiverId,
+      });
+
+      // 3. Set state to sent on success
+      setRequestStatus(prev => ({ ...prev, [receiverId]: 'sent' }));
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Failed to connect");
+      // Reset status if failed so user can try again
+      setRequestStatus(prev => ({ ...prev, [receiverId]: undefined }));
+    }
+  };
+
   if (loading) return <div className="p-6 text-center text-sm opacity-60" style={{color: 'var(--cream-50)'}}>Analysing skills for matches...</div>;
-  if (recommendations.length === 0) return null; 
+  
+  // Handle empty state gracefully (from previous fix)
+  if (recommendations.length === 0) return (
+    <div className="p-8 text-center border border-dashed border-gray-700 rounded-xl mt-12 mb-12" style={{background: 'rgba(255,250,240,0.02)'}}>
+      <h3 className="text-xl font-bold" style={{color: 'var(--cream-50)'}}>No AI Matches Yet</h3>
+      <p className="text-sm mt-2 mb-4" style={{color: 'rgba(255,250,240,0.6)'}}>
+        Add "Learning" interests to your profile to see matches.
+      </p>
+      <button onClick={() => navigate('/edit-profile')} className="px-4 py-2 rounded-lg font-bold text-sm" style={{background: 'var(--mint-600)', color: '#041f2d'}}>
+        Update Profile
+      </button>
+    </div>
+  );
 
   return (
     <div className="rec-container mt-12 mb-12">
@@ -48,7 +93,7 @@ const RecommendedMentors = () => {
         }
 
         .ai-badge {
-          background: linear-gradient(135deg, #6366f1, #a855f7); /* AI Purple Gradient */
+          background: linear-gradient(135deg, #6366f1, #a855f7);
           color: #fff;
           font-size: 11px;
           font-weight: 800;
@@ -125,10 +170,18 @@ const RecommendedMentors = () => {
           font-weight: 700;
           border: none;
           cursor: pointer;
-          transition: opacity 0.2s;
+          transition: all 0.2s;
         }
-        .btn-connect-rec:hover {
+        .btn-connect-rec:hover:not(:disabled) {
           opacity: 0.9;
+          transform: translateY(-1px);
+        }
+        /* Disabled state for "Sent" or "Sending" */
+        .btn-connect-rec:disabled {
+          background: rgba(255,255,255,0.1);
+          color: rgba(255,255,255,0.5);
+          cursor: default;
+          box-shadow: none;
         }
       `}</style>
 
@@ -138,55 +191,62 @@ const RecommendedMentors = () => {
       </div>
       
       <div className="rec-grid">
-        {recommendations.map((user) => (
-          <div key={user._id} className="rec-card">
-            
-            {/* Top Section: Avatar + Score */}
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center gap-3">
-                <div className="rec-avatar">
-                  <img src={user.avatar || profileIcon} alt={user.username} className="w-full h-full object-cover" />
-                </div>
-                <div>
-                  <div className="font-bold text-lg leading-tight" style={{color: 'var(--cream-50)'}}>
-                    {user.username}
+        {recommendations.map((user) => {
+          const status = requestStatus[user._id]; // Get status for this specific user
+          const isSent = status === 'sent';
+          const isSending = status === 'sending';
+
+          return (
+            <div key={user._id} className="rec-card">
+              
+              {/* Top Section: Avatar + Score */}
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="rec-avatar">
+                    <img src={user.avatar || profileIcon} alt={user.username} className="w-full h-full object-cover" />
                   </div>
-                  <div className="text-xs opacity-60" style={{color: 'var(--cream-50)'}}>
-                    {user.email ? user.email.split('@')[0] : 'User'}
+                  <div>
+                    <div className="font-bold text-lg leading-tight" style={{color: 'var(--cream-50)'}}>
+                      {user.username}
+                    </div>
+                    <div className="text-xs opacity-60" style={{color: 'var(--cream-50)'}}>
+                      {user.email ? user.email.split('@')[0] : 'User'}
+                    </div>
                   </div>
+                </div>
+
+                <div className="text-right">
+                  <div className="match-score">{user.matchScore}%</div>
+                  <div className="match-label">Match</div>
                 </div>
               </div>
 
-              <div className="text-right">
-                <div className="match-score">{user.matchScore}%</div>
-                <div className="match-label">Match</div>
+              {/* Middle Section: Skills */}
+              <div className="mb-4">
+                <div className="text-xs font-semibold mb-2 opacity-50" style={{color: 'var(--cream-50)'}}>TEACHES</div>
+                <div className="flex flex-wrap gap-2">
+                  {user.skills.slice(0, 4).map((skill, i) => (
+                    <span key={i} className="skill-pill">
+                      {skill}
+                    </span>
+                  ))}
+                  {user.skills.length > 4 && (
+                    <span className="skill-pill opacity-50">+{user.skills.length - 4}</span>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Middle Section: Skills */}
-            <div className="mb-4">
-              <div className="text-xs font-semibold mb-2 opacity-50" style={{color: 'var(--cream-50)'}}>TEACHES</div>
-              <div className="flex flex-wrap gap-2">
-                {user.skills.slice(0, 4).map((skill, i) => (
-                  <span key={i} className="skill-pill">
-                    {skill}
-                  </span>
-                ))}
-                {user.skills.length > 4 && (
-                  <span className="skill-pill opacity-50">+{user.skills.length - 4}</span>
-                )}
-              </div>
+              {/* Bottom: Action - CHANGED TO CONNECT BUTTON */}
+              <button 
+                onClick={() => handleConnect(user._id)}
+                disabled={isSent || isSending}
+                className="btn-connect-rec"
+              >
+                {isSent ? 'Request Sent' : (isSending ? 'Sending...' : 'Connect')}
+              </button>
             </div>
-
-            {/* Bottom: Action */}
-            <button 
-              onClick={() => navigate('/search-skills')} // Redirects to search where they can connect
-              className="btn-connect-rec"
-            >
-              View Profile
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
