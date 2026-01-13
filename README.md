@@ -1,12 +1,12 @@
 # Skill Exchange Platform
 
-An interactive full-stack web application that enables users to **connect, teach, and learn skills** from others in a peer-to-peer environment. The platform promotes collaborative learning and community engagement by letting users list skills they can offer and search for skills they want to learn. :contentReference[oaicite:0]{index=0}
+An interactive full-stack web application that enables users to **connect, teach, and learn skills** from others in a peer-to-peer environment. The platform promotes collaborative learning and community engagement by letting users list skills they can offer and search for skills they want to learn.
 
 ---
 
 ## 🚀 Live Demo
 
-Explore the deployed app (if deployed):  
+Explore the deployed app :  
 ➡️ [skill-exchangeplatform.vercel.app](https://skill-exchangeplatform.vercel.app/)
 
 ---
@@ -15,9 +15,9 @@ Explore the deployed app (if deployed):
 
 The Skill Exchange Platform connects learners and teachers in a flexible, community-driven way:
 
-- Users can **sign up, create profiles, and manage skills** they can teach or want to learn. :contentReference[oaicite:2]{index=2}  
-- Enables **searching for matching skill partners** and initiating connections. :contentReference[oaicite:3]{index=3}  
-- Designed to encourage **peer-to-peer learning without monetary transactions**, making skills accessible to all. :contentReference[oaicite:4]{index=4}
+- Users can **sign up, create profiles, and manage skills** they can teach or want to learn. 
+- Enables **searching for matching skill partners** and initiating connections. 
+- Designed to encourage **peer-to-peer learning without monetary transactions**, making skills accessible to all. 
 
 ---
 
@@ -28,8 +28,7 @@ The Skill Exchange Platform connects learners and teachers in a flexible, commun
 - **Search & Match System**
 - **Responsive Frontend & Dynamic Backend**
 - **Profile Display & Interaction**
-
-*(You can expand this section with exact features after reviewing your code.)*
+- **Chat with tutor , one-to-one conversation**
 
 ---
 
@@ -38,12 +37,11 @@ The Skill Exchange Platform connects learners and teachers in a flexible, commun
 | Layer | Technology |
 |-------|------------|
 | Frontend | React, HTML, CSS, JavaScript |
-| Backend | Node.js / Express (if applicable) |
-| Database | (add DB here if used: MongoDB / SQL) |
-| Auth | (JWT / OAuth if implemented) |
-| Deployment | Vercel / (other service) |
+| Backend | Node.js / Express  |
+| Database | ( MongoDB / SQL) |
+| Auth | (JWT / OAuth ) |
+| Deployment | Vercel /  |
 
-_Adapt the above stack according to what’s actually implemented._
 
 ---
 
