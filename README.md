@@ -7,7 +7,7 @@ An interactive full-stack web application that enables users to **connect, teach
 ## 🚀 Live Demo
 
 Explore the deployed app (if deployed):  
-➡️ https://skill-exchange-platform-tau.vercel.app/ :contentReference[oaicite:1]{index=1}
+➡️ skill-exchangeplatform.vercel.app
 
 ---
 
